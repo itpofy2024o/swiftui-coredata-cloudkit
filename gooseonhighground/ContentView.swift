@@ -27,6 +27,11 @@ struct ContentView: View {
                     }
                 }
                 .onDelete(perform: deleteItems)
+                .onLongPressGesture {
+                    if let firstItem = items.first {
+                        updateItem(item: firstItem)
+                    }
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -57,6 +62,24 @@ struct ContentView: View {
             }
         }
     }
+    
+    private func updateItem(item: Item) {//err
+        withAnimation {
+            // Example of updating an item's timestamp
+            item.timestamp = Date()
+
+            saveContext()
+        }
+    }
+    
+    private func saveContext() {
+            do {
+                try viewContext.save()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
